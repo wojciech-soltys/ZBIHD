@@ -42,6 +42,7 @@ public class SimulateAction extends Thread {
 					if(rnd.nextDouble() <= SimulatorConfig.addWaterProbability) {
 						tank.addWaterVolume(SimulatorConfig.addWaterVolumeValue);
 					}
+					//TODO add fuel leakage
 				}
 
 				Iterator<Distributor> it2 = petrolStation.getDistributorList().iterator();

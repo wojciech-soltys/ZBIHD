@@ -1,7 +1,7 @@
 package simulator;
 
 public class SimulatorConfig {
-	public static StreamType streamType = StreamType.CSV;
+	public static StreamType streamType = StreamType.CSV_LABELS;
 	
 	public static String tankMeasureFilePath = "TankMeasures.csv";
 	public static String nozzleMeasureFilePath = "NozzleMeasures.csv";
@@ -11,8 +11,10 @@ public class SimulatorConfig {
 	public static Double tankMinimalVolume = Double.valueOf(10);
 	public static Double tankMaximalVolume = Double.valueOf(100);
 	
+	// intervals of actions in millisecond
 	public static Integer measurePeriod = 3000;
 	public static Integer actionPeriod = 300;
+	public static Integer detectionFuelLeakagePeriod = 3000;
 	
 	public static Double addVolumeCoefficient = 0.01;
 	public static Double addTemperatureCoefficient = 0.01;
