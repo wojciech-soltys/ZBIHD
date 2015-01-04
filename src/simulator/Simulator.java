@@ -3,6 +3,7 @@ package simulator;
 import java.io.File;
 
 import data.PetrolStation;
+import detection.FuelLeakageDetection;
 
 public class Simulator {
 
@@ -30,8 +31,10 @@ public class Simulator {
 		}
 		GenerateMeasure gm = new GenerateMeasure(petrolStation);
 		SimulateAction sa = new SimulateAction(petrolStation);
+		FuelLeakageDetection fla = new FuelLeakageDetection(petrolStation);
 		gm.start();
 		sa.start();
+		fla.start();
 	}
 
 	public static void main(String[] args) {

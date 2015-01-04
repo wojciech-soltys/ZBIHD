@@ -16,7 +16,7 @@ import data.TankMeasureProcessed;
 
 public class FuelLeakageDetection extends Thread {
 	
-	FuelLeakageDetection(PetrolStation petrolStation) {
+	public FuelLeakageDetection(PetrolStation petrolStation) {
 		this.petrolStation = petrolStation;
 	}
 
