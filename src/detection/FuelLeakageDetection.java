@@ -1,8 +1,10 @@
 package detection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import simulator.SimulatorConfig;
 import data.Distributor;
@@ -25,7 +27,7 @@ public class FuelLeakageDetection extends Thread {
 	private List<NozzleMeasureRaw> nozzleMeasureList = new ArrayList<NozzleMeasureRaw>();
 	private List<NozzleMeasureProcessed> nozzleMeasureProcessedList = new ArrayList<NozzleMeasureProcessed>();
 	private List<TankMeasureProcessed> tankMeasureList = new ArrayList<TankMeasureProcessed>();
-	private List<TankMeasureInterval> tankMeasureIntervalList = new ArrayList<TankMeasureInterval>();
+	private Map<Integer,List<TankMeasureInterval>> tankMeasureIntervalMap = new HashMap<Integer,List<TankMeasureInterval>>();
 	
 	private NozzleMeasureRaw findNozzleMeasure(Nozzle nozzle) {
 		Iterator<NozzleMeasureRaw> it = nozzleMeasureList.iterator();
@@ -54,6 +56,19 @@ public class FuelLeakageDetection extends Thread {
 			if(tankMeasureInterval.getTankId() == tankMeasureInterval.getTankId()) {
 				tankMeasureInterval.addNozzleVolume(nozzleMeasureProcessed);
 				it.remove();
+			}
+		}
+	}
+	
+	private void checkFuelLeakageForTank(Integer tankId) {
+		List<TankMeasureInterval> listOfTankMesaurments = tankMeasureIntervalMap.get(tankId);
+		if(listOfTankMesaurments != null){
+			for (int i = listOfTankMesaurments.size() - 1; i >= 0; i--) {
+				TankMeasureInterval tankMeasure = listOfTankMesaurments.get(i);
+				if(tankMeasure.isDetectedFuelLeakage()) {
+					System.out.println(tankMeasure.getTimeStamps() + " - single fuel detected in tank " + tankMeasure.getTankId() + " of volume: " 
+							+ tankMeasure.getDifferentialGrossVolume());
+				}
 			}
 		}
 	}
@@ -86,16 +101,24 @@ public class FuelLeakageDetection extends Thread {
 					Tank tank = tank_it.next();
 					TankMeasureProcessed tankMeasureOld = findTankMeasureProcessed(tank);
 					TankMeasureProcessed tankMeasureNew = new TankMeasureProcessed(tank);
-					
+					Integer tankId = Integer.valueOf(tankMeasureNew.getTankId());
 					if(tankMeasureOld != null) {
 						TankMeasureInterval tankMeasureInterval = new TankMeasureInterval(tankMeasureOld,tankMeasureNew);
 						addNozzlesMeasurments(tankMeasureInterval);
-						//TODDO checking fuel leakage
+						tankMeasureInterval.countDifferentialVolume();
+						if(tankMeasureIntervalMap.get(tankId) == null) {
+							List<TankMeasureInterval> tankMeasureIntervalList = new ArrayList<TankMeasureInterval>();
+							tankMeasureIntervalList.add(tankMeasureInterval);
+							tankMeasureIntervalMap.put(tankId, tankMeasureIntervalList);
+						} else {
+							List<TankMeasureInterval> tankMeasureIntervalList = tankMeasureIntervalMap.get(tankId);
+							tankMeasureIntervalList.add(tankMeasureInterval);
+						}
 						tankMeasureList.remove(tankMeasureOld);
 					}
 					tankMeasureList.add(tankMeasureNew);
+					checkFuelLeakageForTank(tankId);
 				}
-				
 				sleep(SimulatorConfig.detectionFuelLeakagePeriod);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

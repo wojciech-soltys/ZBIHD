@@ -28,4 +28,8 @@ public class SimulatorConfig {
 	public static Double nozzleRefuelProbability = 0.2;
 	
 	public static Double addWaterVolumeValue = 0.001;
+	
+	public static boolean fuelLeakageSimulation = true;
+	public static Double fuelLeakageVolume = 0.002;
+	public static Double fuelDetectionLeakageVolume = 0.001;
 }

@@ -1,6 +1,9 @@
 package data;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import simulator.SimulatorConfig;
 
 public class TankMeasureInterval {
 	
@@ -11,6 +14,9 @@ public class TankMeasureInterval {
 	private Double tankIntervalGrossVolume = Double.valueOf(0);
 	private Double nozzlesIntervalNettoVolume = Double.valueOf(0);
 	private Double nozzlesIntervalGrossVolume = Double.valueOf(0);
+	private Double differentialNettoVolume = Double.valueOf(0);
+	private Double differentialGrossVolume = Double.valueOf(0);
+	private boolean detectedFuelLeakage = false;
 
 	public TankMeasureInterval(TankMeasureProcessed begin,TankMeasureProcessed end) {
 		tankId = begin.getTankId();
@@ -21,7 +27,21 @@ public class TankMeasureInterval {
 	}
 	
 	public void addNozzleVolume(NozzleMeasureProcessed nozzleMeasure) {
-		
+		nozzlesIntervalNettoVolume += nozzleMeasure.getNettoVolume();
+		nozzlesIntervalGrossVolume += nozzleMeasure.getGrossVolume();
+	}
+	
+	public void countDifferentialVolume() {
+		differentialNettoVolume = tankIntervalNettoVolume - nozzlesIntervalNettoVolume;
+		differentialGrossVolume = tankIntervalGrossVolume - nozzlesIntervalGrossVolume;
+		if(differentialGrossVolume > SimulatorConfig.fuelDetectionLeakageVolume) {
+			detectedFuelLeakage = true;
+		}
+	}
+	
+	public String getTimeStamps() {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		return sdf.format(beginTimeStamp.getTime()) + " : " + sdf.format(endTimeStamp.getTime());
 	}
 
 	public int getTankId() {
@@ -78,5 +98,29 @@ public class TankMeasureInterval {
 
 	public void setNozzlesIntervalGrossVolume(Double nozzlesIntervalGrossVolume) {
 		this.nozzlesIntervalGrossVolume = nozzlesIntervalGrossVolume;
+	}
+
+	public Double getDifferentialNettoVolume() {
+		return differentialNettoVolume;
+	}
+
+	public void setDifferentialNettoVolume(Double differentialNettoVolume) {
+		this.differentialNettoVolume = differentialNettoVolume;
+	}
+
+	public Double getDifferentialGrossVolume() {
+		return differentialGrossVolume;
+	}
+
+	public void setDifferentialGrossVolume(Double differentialGrossVolume) {
+		this.differentialGrossVolume = differentialGrossVolume;
+	}
+
+	public boolean isDetectedFuelLeakage() {
+		return detectedFuelLeakage;
+	}
+
+	public void setDetectedFuelLeakage(boolean detectedFuelLeakage) {
+		this.detectedFuelLeakage = detectedFuelLeakage;
 	}
 }
