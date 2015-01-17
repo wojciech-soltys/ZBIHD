@@ -43,6 +43,16 @@ public class TankMeasureInterval {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 		return sdf.format(beginTimeStamp.getTime()) + " : " + sdf.format(endTimeStamp.getTime());
 	}
+	
+	public String getTimeBeginTimeStamp() {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		return sdf.format(beginTimeStamp.getTime());
+	}
+	
+	public String getTimeEndTimeStamp() {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		return sdf.format(endTimeStamp.getTime());
+	}
 
 	public int getTankId() {
 		return tankId;

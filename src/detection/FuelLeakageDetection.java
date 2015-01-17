@@ -64,10 +64,31 @@ public class FuelLeakageDetection extends Thread {
 		List<TankMeasureInterval> listOfTankMesaurments = tankMeasureIntervalMap.get(tankId);
 		if(listOfTankMesaurments != null){
 			for (int i = listOfTankMesaurments.size() - 1; i >= 0; i--) {
+				TankMeasureInterval lastDetected = null;
+				TankMeasureInterval firstDetected = null;
 				TankMeasureInterval tankMeasure = listOfTankMesaurments.get(i);
 				if(tankMeasure.isDetectedFuelLeakage()) {
+					lastDetected = tankMeasure;
 					System.out.println(tankMeasure.getTimeStamps() + " - single fuel detected in tank " + tankMeasure.getTankId() + " of volume: " 
 							+ tankMeasure.getDifferentialGrossVolume());
+					if(listOfTankMesaurments.size() < SimulatorConfig.minNumbersOfPeriodsToDetectContinuousFuelLeakage){
+						break;
+					} else {
+						int numberOfDetected = 0;
+						for (int j = listOfTankMesaurments.size() - 2; j >= 0; j--) {
+							TankMeasureInterval tankMeasureInterval = listOfTankMesaurments.get(j);
+							if(tankMeasureInterval.isDetectedFuelLeakage()) {
+								firstDetected = tankMeasureInterval;
+								numberOfDetected++;
+							}
+							if(numberOfDetected >= SimulatorConfig.minNumbersOfPeriodsToDetectContinuousFuelLeakage) {
+								System.out.println("CONTINUOUS FUEL LEAKAGE DETECTED IN TANK NUMBER : " +
+										firstDetected.getTankId() + " FROM  " + firstDetected.getTimeBeginTimeStamp() +
+										"TO " + lastDetected.getTimeEndTimeStamp());
+								break;
+							}
+						}
+					}
 				}
 			}
 		}

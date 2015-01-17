@@ -32,4 +32,5 @@ public class SimulatorConfig {
 	public static boolean fuelLeakageSimulation = true;
 	public static Double fuelLeakageVolume = 0.002;
 	public static Double fuelDetectionLeakageVolume = 0.001;
+	public static int 	minNumbersOfPeriodsToDetectContinuousFuelLeakage = 8;
 }
