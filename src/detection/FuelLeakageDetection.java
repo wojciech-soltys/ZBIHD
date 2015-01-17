@@ -80,6 +80,8 @@ public class FuelLeakageDetection extends Thread {
 							if(tankMeasureInterval.isDetectedFuelLeakage()) {
 								firstDetected = tankMeasureInterval;
 								numberOfDetected++;
+							} else {
+								break;
 							}
 							if(numberOfDetected >= SimulatorConfig.minNumbersOfPeriodsToDetectContinuousFuelLeakage) {
 								System.out.println("CONTINUOUS FUEL LEAKAGE DETECTED IN TANK NUMBER : " +
