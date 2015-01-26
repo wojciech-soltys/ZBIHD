@@ -21,7 +21,6 @@ public class Simulator {
 		this.petrolStation = petrolStation;
 	}
 
-	// jestem misia abc
 	public void startSimulation() {
 		if(SimulatorConfig.streamType == StreamType.CSV) {
 			File file = new File(SimulatorConfig.nozzleMeasureFilePath);
