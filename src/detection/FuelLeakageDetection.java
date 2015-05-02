@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import simulator.SimulatorConfig;
+import simulator.StreamType;
 import data.Distributor;
 import data.Nozzle;
 import data.NozzleMeasureProcessed;
@@ -15,6 +16,7 @@ import data.PetrolStation;
 import data.Tank;
 import data.TankMeasureInterval;
 import data.TankMeasureProcessed;
+import database.MySQLAccess;
 
 public class FuelLeakageDetection extends Thread {
 	
@@ -60,6 +62,7 @@ public class FuelLeakageDetection extends Thread {
 		}
 	}
 	
+    //TODO - dodanie zapisu do pliku
 	private void checkFuelLeakageForTank(Integer tankId) {
 		List<TankMeasureInterval> listOfTankMesaurments = tankMeasureIntervalMap.get(tankId);
 		if(listOfTankMesaurments != null){
@@ -147,6 +150,12 @@ public class FuelLeakageDetection extends Thread {
 							tankMeasureIntervalList.add(tankMeasureInterval);
 						}
 						tankMeasureList.remove(tankMeasureOld);
+						
+						//TODO - zapis do pliku lub konsoli jak w GenerateMeasure
+						if(SimulatorConfig.streamType == StreamType.DATABASE) {
+							MySQLAccess mySQLAccess = new MySQLAccess();
+							mySQLAccess.writeTankMeasureIntervalToDatabase(tankMeasureInterval);
+						}
 					}
 					tankMeasureList.add(tankMeasureNew);
 					checkFuelLeakageForTank(tankId);

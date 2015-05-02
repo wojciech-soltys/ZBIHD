@@ -13,6 +13,7 @@ import data.NozzleMeasureRaw;
 import data.PetrolStation;
 import data.Tank;
 import data.TankMeasureProcessed;
+import database.MySQLAccess;
 
 public class GenerateMeasure extends Thread {
 
@@ -38,6 +39,7 @@ public class GenerateMeasure extends Thread {
 
 	@Override
 	public void run() {
+		MySQLAccess mySQLAccess = new MySQLAccess();
 		NozzleMeasureProcessed.setNozzleCalibrationCoefficient(SimulatorConfig.nozzleCalibrationCoefficient);
 		if(SimulatorConfig.streamType == StreamType.CSV_LABELS) {
 			try {
@@ -75,6 +77,9 @@ public class GenerateMeasure extends Thread {
 					case LIST:
 						System.out.println(tankMeasureProcessed);
 						break;
+					case DATABASE:
+						mySQLAccess.writeTankMeasureProcessedToDatabase(tankMeasureProcessed);
+						break;
 					default:
 						assert(false);
 						break;
@@ -110,6 +115,9 @@ public class GenerateMeasure extends Thread {
 									break;
 								case LIST:
 									System.out.println(nozzleMeasureProcessed);
+									break;
+								case DATABASE:
+									mySQLAccess.writeNozzleMeasureProcessedToDatabase(nozzleMeasureProcessed);
 									break;
 								default:
 									assert(false);

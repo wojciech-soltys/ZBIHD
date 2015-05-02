@@ -1,5 +1,5 @@
 package simulator;
 
 public enum StreamType {
-	LIST, CSV, CSV_LABELS
+	LIST, CSV, CSV_LABELS, DATABASE
 }

@@ -1,11 +1,13 @@
 package simulator;
 
 public class SimulatorConfig {
-	public static StreamType streamType = StreamType.CSV_LABELS;
+	public static StreamType streamType = StreamType.DATABASE;
 	
 	public static String tankMeasureFilePath = "TankMeasures.csv";
 	public static String nozzleMeasureFilePath = "NozzleMeasures.csv";
-	
+	//TODO - stworzylem juz nazwe pliku :P
+	public static String tankIntervalMeasureFilePath = "TankIntervalMeasures.csv";
+	//TODO - zaburzanie pomiarow z pistoletow 
 	public static Double nozzleCalibrationCoefficient = 0.999;
 	
 	public static Double tankMinimalVolume = Double.valueOf(10);
@@ -30,7 +32,18 @@ public class SimulatorConfig {
 	public static Double addWaterVolumeValue = 0.001;
 	
 	public static boolean fuelLeakageSimulation = true;
+	//TODO - stworzenie randomowego wycieku
 	public static Double fuelLeakageVolume = 0.002;
 	public static Double fuelDetectionLeakageVolume = 0.001;
 	public static int 	minNumbersOfPeriodsToDetectContinuousFuelLeakage = 8;
+	
+	
+	/***
+	 * Database settings
+	 */
+	
+	public static final String databaseUrl = "localhost";
+	public static final String databaseUser = "root";
+	public static final String databasePassword = "root";
+	public static final String databaseName = "zbdihd";
 }
