@@ -17,12 +17,12 @@ public class SimulateAction extends Thread {
 	private PetrolStation petrolStation;
 
 	@Override
-	public void run() {
+	public void run() {		
 		while (true) {
 			try {
 				// generating petrol supplies
 				Iterator<Tank> it = petrolStation.getTankList().iterator();
-				Random rnd = new Random();
+				Random rnd = new Random();		// czy to nie powinno byc przed whilem?
 				while (it.hasNext()) {
 					Tank tank = it.next();
 					if (tank.getGrossVolume() <= tank.getMinimalVolume()) {
@@ -42,7 +42,8 @@ public class SimulateAction extends Thread {
 					if(rnd.nextDouble() <= SimulatorConfig.addWaterProbability) {
 						tank.addWaterVolume(SimulatorConfig.addWaterVolumeValue);
 					}
-					if(SimulatorConfig.fuelLeakageSimulation) {
+					if(SimulatorConfig.fuelLeakageSimulation) {						
+//						tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
 						tank.minusVolume(SimulatorConfig.fuelLeakageVolume);
 					}
 				}

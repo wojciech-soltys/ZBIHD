@@ -1,5 +1,7 @@
  package detection;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -155,6 +157,16 @@ public class FuelLeakageDetection extends Thread {
 						if(SimulatorConfig.streamType == StreamType.DATABASE) {
 							MySQLAccess mySQLAccess = new MySQLAccess();
 							mySQLAccess.writeTankMeasureIntervalToDatabase(tankMeasureInterval);
+						}
+						if(SimulatorConfig.streamType == StreamType.CSV_LABELS) {
+							try {
+								FileWriter fw = new FileWriter(SimulatorConfig.tankIntervalMeasureFilePath, true);
+								fw.write(tankMeasureInterval.toString());
+								fw.close();
+							}
+							catch(IOException e) {
+								assert(false);
+							}
 						}
 					}
 					tankMeasureList.add(tankMeasureNew);

@@ -1,7 +1,8 @@
 package simulator;
 
 public class SimulatorConfig {
-	public static StreamType streamType = StreamType.DATABASE;
+//	public static StreamType streamType = StreamType.DATABASE;
+	public static StreamType streamType = StreamType.CSV_LABELS;
 	
 	public static String tankMeasureFilePath = "TankMeasures.csv";
 	public static String nozzleMeasureFilePath = "NozzleMeasures.csv";

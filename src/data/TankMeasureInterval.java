@@ -133,4 +133,30 @@ public class TankMeasureInterval {
 	public void setDetectedFuelLeakage(boolean detectedFuelLeakage) {
 		this.detectedFuelLeakage = detectedFuelLeakage;
 	}
+	@Override
+    public String toString() {
+    	String str = new String();
+    	
+    	switch(SimulatorConfig.streamType)
+    	{
+		case CSV:
+		case CSV_LABELS:
+	    	str += getTankId() + ";";
+	    	str += getTimeBeginTimeStamp() + ";";
+	    	str += getTimeEndTimeStamp() + ";";
+	    	str += tankIntervalNettoVolume + ";";	    	
+	    	str += tankIntervalGrossVolume + ";";
+	    	str += nozzlesIntervalNettoVolume + ";";
+	    	str += nozzlesIntervalGrossVolume + ";";
+	    	str += differentialNettoVolume + ";";
+	    	str += differentialGrossVolume + ";";
+	    	str += isDetectedFuelLeakage() + "\n";	   	
+			break;		
+		default:
+			assert(false);
+			break;
+    	}
+
+        return str;
+    }
 }
