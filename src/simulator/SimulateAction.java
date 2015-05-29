@@ -43,8 +43,8 @@ public class SimulateAction extends Thread {
 						tank.addWaterVolume(SimulatorConfig.addWaterVolumeValue);
 					}
 					if(SimulatorConfig.fuelLeakageSimulation) {						
-//						tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
-						tank.minusVolume(SimulatorConfig.fuelLeakageVolume);
+						tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
+						//tank.minusVolume(SimulatorConfig.fuelLeakageVolume);
 					}
 				}
 
