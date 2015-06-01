@@ -6,9 +6,7 @@ public class SimulatorConfig {
 	
 	public static String tankMeasureFilePath = "TankMeasures.csv";
 	public static String nozzleMeasureFilePath = "NozzleMeasures.csv";
-	//TODO - stworzylem juz nazwe pliku :P
-	public static String tankIntervalMeasureFilePath = "TankIntervalMeasures.csv";
-	//TODO - zaburzanie pomiarow z pistoletow 
+	public static String tankIntervalMeasureFilePath = "TankIntervalMeasures.csv"; 
 	public static Double nozzleCalibrationCoefficient = 0.999;
 	
 	public static Double tankMinimalVolume = Double.valueOf(10);
@@ -17,7 +15,7 @@ public class SimulatorConfig {
 	// intervals of actions in millisecond
 	public static Integer measurePeriod = 3000;
 	public static Integer actionPeriod = 300;
-	public static Integer detectionFuelLeakagePeriod = 3000;
+	public static Integer detectionFuelLeakagePeriod = 1000;
 	
 	public static Double addVolumeCoefficient = 0.01;
 	public static Double addTemperatureCoefficient = 0.01;
@@ -33,8 +31,7 @@ public class SimulatorConfig {
 	public static Double addWaterVolumeValue = 0.001;
 	
 	public static boolean fuelLeakageSimulation = true;
-	//TODO - stworzenie randomowego wycieku
-	public static Double fuelLeakageVolume = 0.002;
+	public static Double fuelLeakageVolume = 0.02;
 	public static Double fuelDetectionLeakageVolume = 0.001;
 	public static int 	minNumbersOfPeriodsToDetectContinuousFuelLeakage = 8;
 	

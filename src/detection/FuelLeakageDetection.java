@@ -1,5 +1,7 @@
  package detection;
 
+import graph.CumulativeVarianceGraph;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class FuelLeakageDetection extends Thread {
 	}
 
 	private PetrolStation petrolStation;
+	
+	private CumulativeVarianceGraph cumulativeVarianceGraph = new CumulativeVarianceGraph("Cumulative Variance Graph - Tank 0");
 	
 	private List<NozzleMeasureRaw> nozzleMeasureList = new ArrayList<NozzleMeasureRaw>();
 	private List<NozzleMeasureProcessed> nozzleMeasureProcessedList = new ArrayList<NozzleMeasureProcessed>();
@@ -64,7 +68,7 @@ public class FuelLeakageDetection extends Thread {
 		}
 	}
 	
-    //TODO - dodanie zapisu do pliku
+	
 	private void checkFuelLeakageForTank(Integer tankId) {
 		List<TankMeasureInterval> listOfTankMesaurments = tankMeasureIntervalMap.get(tankId);
 		if(listOfTankMesaurments != null){
@@ -72,6 +76,9 @@ public class FuelLeakageDetection extends Thread {
 				TankMeasureInterval lastDetected = null;
 				TankMeasureInterval firstDetected = null;
 				TankMeasureInterval tankMeasure = listOfTankMesaurments.get(i);
+/*				if(tankId == 0) {
+					cumulativeVarianceGraph.addVariance(tankMeasure.getDifferentialGrossVolume().doubleValue());
+				}*/
 				if(tankMeasure.isDetectedFuelLeakage()) {
 					lastDetected = tankMeasure;
 					int numberOfDetected = 1;
@@ -98,8 +105,18 @@ public class FuelLeakageDetection extends Thread {
 									firstDetected.getTankId() + " DURING " + numberOfDetected + " PERIODS FROM  " + firstDetected.getTimeBeginTimeStamp() +
 									" TO " + lastDetected.getTimeEndTimeStamp());
 							System.out.println("---------------------------------------------------------------------------------------------------------------------");
+							if(tankId == 0) {
+								Double differentialIntervalGrossVolume = Double.valueOf(0);
+								for(int k = 0; i < listOfTankMesaurments.size(); i++) {
+									differentialIntervalGrossVolume += listOfTankMesaurments.get(k).getDifferentialGrossVolume();
+								}
+								cumulativeVarianceGraph.addVariance(differentialIntervalGrossVolume.doubleValue());
+							}
+							listOfTankMesaurments.clear();
+							numberOfDetected = 0;	
 							break;
 						}
+						
 					}
 					
 				}
@@ -153,7 +170,6 @@ public class FuelLeakageDetection extends Thread {
 						}
 						tankMeasureList.remove(tankMeasureOld);
 						
-						//TODO - zapis do pliku lub konsoli jak w GenerateMeasure
 						if(SimulatorConfig.streamType == StreamType.DATABASE) {
 							MySQLAccess mySQLAccess = new MySQLAccess();
 							mySQLAccess.writeTankMeasureIntervalToDatabase(tankMeasureInterval);
