@@ -94,4 +94,10 @@ public class CumulativeVarianceGraph extends ApplicationFrame implements ActionL
         this.series.add(new Millisecond(), this.lastValue);
     }
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
