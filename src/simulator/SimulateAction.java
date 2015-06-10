@@ -15,6 +15,8 @@ public class SimulateAction extends Thread {
 	}
 
 	private PetrolStation petrolStation;
+	
+	private int runCounter =0;
 
 	@Override
 	public void run() {		
@@ -42,8 +44,18 @@ public class SimulateAction extends Thread {
 					if(rnd.nextDouble() <= SimulatorConfig.addWaterProbability) {
 						tank.addWaterVolume(SimulatorConfig.addWaterVolumeValue);
 					}
-					if(SimulatorConfig.fuelLeakageSimulation) {						
-						tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
+					if(SimulatorConfig.fuelLeakageSimulation) {
+						if(runCounter < 96) {
+							runCounter++;
+						}
+						if(tank.getTankId() == 0 && runCounter >=32) {
+							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
+						} else if (tank.getTankId() == 1 && runCounter >=64) {
+							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
+						} else if (runCounter >= 96) {
+							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
+						}
+						
 						//tank.minusVolume(SimulatorConfig.fuelLeakageVolume);
 					}
 				}

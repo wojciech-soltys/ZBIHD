@@ -83,7 +83,7 @@ public class CumulativeVarianceGraph extends ApplicationFrame implements ActionL
         axis.setAutoRange(true);
         axis.setFixedAutoRange(60000.0);  // 60 seconds
         axis = plot.getRangeAxis();
-        axis.setRange(0.0, 0.5); 
+        axis.setRange(-0.01, 0.5);
         return result;
     }
     

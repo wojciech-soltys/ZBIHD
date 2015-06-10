@@ -14,7 +14,7 @@ public class SimulatorConfig {
 	
 	// intervals of actions in millisecond
 	public static Integer measurePeriod = 3000;
-	public static Integer actionPeriod = 300;
+	public static Integer actionPeriod = 1000;
 	public static Integer detectionFuelLeakagePeriod = 1000;
 	
 	public static Double addVolumeCoefficient = 0.01;
