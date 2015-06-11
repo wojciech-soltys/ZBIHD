@@ -27,10 +27,14 @@ import org.jfree.ui.RefineryUtilities;
 public class CumulativeVarianceGraph extends ApplicationFrame implements ActionListener {
 
     /** The time series data. */
-    private TimeSeries series;
+    private TimeSeries seriesTank0;
+    private TimeSeries seriesTank1;
+    private TimeSeries seriesTank2;
 
     /** The most recent value added. */
-    private double lastValue = 0.0;
+    private double lastValueTank0 = 0.0;
+    private double lastValueTank1 = 0.0;
+    private double lastValueTank2= 0.0;
 
     /**
      * Constructs a new demonstration application.
@@ -40,10 +44,17 @@ public class CumulativeVarianceGraph extends ApplicationFrame implements ActionL
     public CumulativeVarianceGraph(final String title) {
 
         super(title);
-        this.series = new TimeSeries("Random Data", Millisecond.class);
-        final TimeSeriesCollection dataset = new TimeSeriesCollection(this.series);
+        this.seriesTank0 = new TimeSeries("Tank 0 - Data", Millisecond.class);
+        this.seriesTank1 = new TimeSeries("Tank 1 - Data", Millisecond.class);
+        this.seriesTank2 = new TimeSeries("Tank 2 - Data", Millisecond.class);
+        final TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(this.seriesTank0);
+        dataset.addSeries(this.seriesTank1);
+        dataset.addSeries(this.seriesTank2);
         final JFreeChart chart = createChart(dataset);
-
+        final Millisecond now = new Millisecond();
+        
+        
         final ChartPanel chartPanel = new ChartPanel(chart);
 /*        final JButton button = new JButton("Add New Data Item");
         button.setActionCommand("ADD_DATA");
@@ -80,18 +91,33 @@ public class CumulativeVarianceGraph extends ApplicationFrame implements ActionL
         );
         final XYPlot plot = result.getXYPlot();
         ValueAxis axis = plot.getDomainAxis();
-        axis.setAutoRange(true);
+        axis.setAutoRange(true);        
         axis.setFixedAutoRange(60000.0);  // 60 seconds
         axis = plot.getRangeAxis();
-        axis.setRange(-0.01, 0.5);
+        axis.setRange(-0.01, 0.5); 
         return result;
     }
     
-    public void addVariance(double variance) {
-    	this.lastValue += variance;
-        final Millisecond now = new Millisecond();
-        //System.out.println("Now = " + now.toString());
-        this.series.add(new Millisecond(), this.lastValue);
+    public void addVariance(double variance, int tankId, Millisecond now) {
+    	if (tankId == 0){
+    		this.lastValueTank0 += variance;
+         //   final Millisecond now = new Millisecond();
+            //System.out.println("Now = " + now.toString());
+            this.seriesTank0.add(now, this.lastValueTank0);    		
+    	}
+    	if (tankId == 1){
+    		this.lastValueTank1 += variance;
+          //  final Millisecond now = new Millisecond();
+            //System.out.println("Now = " + now.toString());
+            this.seriesTank1.add(now, this.lastValueTank1);    		
+    	}
+    	if (tankId == 2){
+    		this.lastValueTank2 += variance;
+            //final Millisecond now = new Millisecond();
+            //System.out.println("Now = " + now.toString());
+            this.seriesTank2.add(now, this.lastValueTank2);    		
+    	}
+    	
     }
 
 	@Override

@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.jfree.data.time.Millisecond;
+
 import simulator.SimulatorConfig;
 import simulator.StreamType;
 import data.Distributor;
@@ -30,7 +32,7 @@ public class FuelLeakageDetection extends Thread {
 
 	private PetrolStation petrolStation;
 	
-	private CumulativeVarianceGraph cumulativeVarianceGraph = new CumulativeVarianceGraph("Cumulative Variance Graph - Tank 0");
+	private CumulativeVarianceGraph cumulativeVarianceGraph = new CumulativeVarianceGraph("Cumulative Variance Graph");
 	
 	private List<NozzleMeasureRaw> nozzleMeasureList = new ArrayList<NozzleMeasureRaw>();
 	private List<NozzleMeasureProcessed> nozzleMeasureProcessedList = new ArrayList<NozzleMeasureProcessed>();
@@ -69,17 +71,19 @@ public class FuelLeakageDetection extends Thread {
 	}
 	
 	
-	private void checkFuelLeakageForTank(Integer tankId) {
+	private void checkFuelLeakageForTank(Integer tankId, Millisecond now) {
 		List<TankMeasureInterval> listOfTankMesaurments = tankMeasureIntervalMap.get(tankId);
+		int numberOfDetected;
 		if(listOfTankMesaurments != null){
 			for (int i = listOfTankMesaurments.size() - 1; i >= 0; i--) {
 				TankMeasureInterval lastDetected = null;
 				TankMeasureInterval firstDetected = null;
 				TankMeasureInterval tankMeasure = listOfTankMesaurments.get(i);
+				numberOfDetected = 1;
 /*				if(tankId == 0) {
-					cumulativeVarianceGraph.addVariance(tankMeasure.getDifferentialGrossVolume().doubleValue());
+					cumulativeVarianceGraph.addVariance(tankMeasure.getDifferentialGrossVolume().doubleValue(),tankId, now);
 				}*/
-				int numberOfDetected = 1;
+				
 				if(tankMeasure.isDetectedFuelLeakage()) {
 					lastDetected = tankMeasure;
 					
@@ -100,7 +104,7 @@ public class FuelLeakageDetection extends Thread {
 							numberOfDetected++;
 						}
 					}
-					if(numberOfDetected >= SimulatorConfig.minNumbersOfPeriodsToDetectContinuousFuelLeakage * 0.75) {
+					if(numberOfDetected >= SimulatorConfig.minNumbersOfPeriodsToDetectContinuousFuelLeakage) {
 						firstDetected = listOfTankMesaurments.get(listOfTankMesaurments.size() - numberOfDetected);
 						System.out.println("CONTINUOUS FUEL LEAKAGE DETECTED IN TANK NUMBER " +
 								firstDetected.getTankId() + " DURING " + numberOfDetected + " PERIODS FROM  " + firstDetected.getTimeBeginTimeStamp() +
@@ -109,11 +113,25 @@ public class FuelLeakageDetection extends Thread {
 					}
 					
 					if(tankId == 0) {
-						Double differentialIntervalGrossVolume = Double.valueOf(0);
-						for(int k = 0; i < listOfTankMesaurments.size(); i++) {
-							differentialIntervalGrossVolume += listOfTankMesaurments.get(k).getDifferentialGrossVolume();
+						Double differentialIntervalGrossVolumeTank0 = Double.valueOf(0);
+						for(int k = 0; k < listOfTankMesaurments.size(); k++) {
+							differentialIntervalGrossVolumeTank0 += listOfTankMesaurments.get(k).getDifferentialGrossVolume();
 						}
-						cumulativeVarianceGraph.addVariance(differentialIntervalGrossVolume.doubleValue());
+						cumulativeVarianceGraph.addVariance(differentialIntervalGrossVolumeTank0.doubleValue(), tankId, now);
+					}
+					if(tankId == 1) {
+						Double differentialIntervalGrossVolumeTank1 = Double.valueOf(0);
+						for(int k = 0; k < listOfTankMesaurments.size(); k++) {
+							differentialIntervalGrossVolumeTank1 += listOfTankMesaurments.get(k).getDifferentialGrossVolume();
+						}
+						cumulativeVarianceGraph.addVariance(differentialIntervalGrossVolumeTank1.doubleValue(), tankId, now);
+					}
+					if(tankId == 2) {
+						Double differentialIntervalGrossVolumeTank2 = Double.valueOf(0);
+						for(int k = 0; k < listOfTankMesaurments.size(); k++) {
+							differentialIntervalGrossVolumeTank2 += listOfTankMesaurments.get(k).getDifferentialGrossVolume();
+						}
+						cumulativeVarianceGraph.addVariance(differentialIntervalGrossVolumeTank2.doubleValue(), tankId, now);
 					}
 					listOfTankMesaurments.clear();
 					numberOfDetected = 0;	
@@ -149,6 +167,7 @@ public class FuelLeakageDetection extends Thread {
 				}
 				
 				Iterator<Tank> tank_it = petrolStation.getTankList().iterator();
+				final Millisecond now = new Millisecond();
 				while(tank_it.hasNext()) {
 					Tank tank = tank_it.next();
 					if(tank.isRefuel) {
@@ -187,7 +206,7 @@ public class FuelLeakageDetection extends Thread {
 						}
 					}
 					tankMeasureList.add(tankMeasureNew);
-					checkFuelLeakageForTank(tankId);
+					checkFuelLeakageForTank(tankId, now);
 				}
 				sleep(SimulatorConfig.detectionFuelLeakagePeriod);
 			} catch (InterruptedException e) {

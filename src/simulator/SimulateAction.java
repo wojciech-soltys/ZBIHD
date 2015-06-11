@@ -24,7 +24,8 @@ public class SimulateAction extends Thread {
 			try {
 				// generating petrol supplies
 				Iterator<Tank> it = petrolStation.getTankList().iterator();
-				Random rnd = new Random();		// czy to nie powinno byc przed whilem?
+				Random rnd = new Random();	
+				runCounter+=1;				
 				while (it.hasNext()) {
 					Tank tank = it.next();
 					if (tank.getGrossVolume() <= tank.getMinimalVolume()) {
@@ -45,14 +46,15 @@ public class SimulateAction extends Thread {
 						tank.addWaterVolume(SimulatorConfig.addWaterVolumeValue);
 					}
 					if(SimulatorConfig.fuelLeakageSimulation) {
-						if(runCounter < 96) {
-							runCounter++;
+						if(runCounter >= 96) {
+							runCounter=96;
 						}
-						if(tank.getTankId() == 0 && runCounter >=32) {
+						
+						if(tank.getTankId() == 2 && ((runCounter >=24 && runCounter<=39) || (runCounter >=56 && runCounter<=63) || runCounter>=80)) {
 							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
-						} else if (tank.getTankId() == 1 && runCounter >=64) {
+						} else if (tank.getTankId() == 1 && runCounter >=32) {
 							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
-						} else if (runCounter >= 96) {
+						} else if (tank.getTankId() == 0 && runCounter >= 32) {
 							tank.minusVolume(SimulatorConfig.fuelLeakageVolume*(rnd.nextInt(30)+85)/100);
 						}
 						
